@@ -13,3 +13,7 @@ Added the click module to add 2 feature functions
 list_bucket_objects
 list buckets
 
+# Added new feature for creating S3 Buckets , Apply Bucket POlicy and create a static website
+
+setup_bucket
+
