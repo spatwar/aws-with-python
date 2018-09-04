@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 "boto3" = "*"
+click = "*"
+d = "*"
 
 [dev-packages]
 ipython = "*"

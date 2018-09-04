@@ -1,6 +1,7 @@
+#!/usr/bin/env python3.6
+
 import boto3
 import click
-
 session = boto3.Session(profile_name='pythonAutomation')
 s3 = session.resource('s3')
 
@@ -23,4 +24,4 @@ def list_bucket_objects(bucket):
         print(obj)
 
 if __name__ == '__main__':
-    list_buckets()
+    cli()
