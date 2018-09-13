@@ -16,4 +16,7 @@ list buckets
 # Added new feature for creating S3 Buckets , Apply Bucket POlicy and create a static website
 
 setup_bucket
+List contents of bucket
+Create and setup bucket
+Sync Directory tree to bucket
 
