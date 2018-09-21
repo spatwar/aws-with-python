@@ -27,7 +27,7 @@ class BucketManager:
     def init_bucket(self, bucket_name):
         new_bucket = None
         try:
-            new_bucket = self.s3.create_bucket(Bucket=bucket)
+            new_bucket = self.s3.create_bucket(Bucket=bucket_name)
         except ClientError as e:
             if e.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
                 new_bucket = self.s3.Bucket(bucket)
