@@ -44,7 +44,7 @@ def list_bucket_objects(bucket):
 
 @cli.command('setup-bucket')
 @click.argument('bucket')
-def setup_bucket():
+def setup_bucket(bucket):
     new_bucket = bucket_manager.init_bucket(bucket)
     new_bucket.upload_file('/code/aws-with-python/01-webotron/index.html','index.html', ExtraArgs={'ContentType':'text/html'})
     bucket_manager.set_policy(new_bucket)
@@ -57,7 +57,7 @@ def setup_bucket():
 def sync(pathname, bucket):
     "Sync contents of the PATHNAME to Bucket"
     bucket_manager.sync(pathname, bucket)
-    
+
 
 if __name__ == '__main__':
     cli()
