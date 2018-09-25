@@ -16,9 +16,11 @@ import click
 
 
 from bucket import BucketManager
+from domain import DomainManager
 
 session = boto3.Session(profile_name='pythonAutomation')
-bucket_manager = BucketManager(session)
+bucket_manager = BucketManager(session)_9880372aa2354929e138ee53cf662b58.tljzshvwok.acm-validations.aws.
+domain_manager = DomainManager(session)
 #s3 = session.resource('s3')
 
 
@@ -57,6 +59,23 @@ def setup_bucket(bucket):
 def sync(pathname, bucket):
     "Sync contents of the PATHNAME to Bucket"
     bucket_manager.sync(pathname, bucket)
+
+
+@cli.command('setup-domain')
+@click.argument('domain')
+@click.argument('bucket')
+def setup_domain(domain, bucket):
+  zone = domain_manager.find_hosted_zone(domain) \
+       or domain_manager.create_hosted_zone(domain)
+  print(zone)
+  try:
+      a_record = domain_manager.create_s3_domain_record(zone, domain)
+  except ClientError as e:
+      print(e.response['Error']['Code'] )
+
+
+  print("Domain configure: http://{}".format(domain))
+  print(a_record)
 
 
 if __name__ == '__main__':
