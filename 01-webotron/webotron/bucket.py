@@ -69,6 +69,7 @@ class BucketManager:
     @staticmethod
     def upload_file(bucket, path , key):
         """Upload path to S3."""
+        #print( "Path %s , key %s" % (path ,key) )
         content_type = mimetypes.guess_type(key)[0] or 'text/plain'
         bucket.upload_file(
             path,

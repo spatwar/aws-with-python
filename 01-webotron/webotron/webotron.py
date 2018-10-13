@@ -15,12 +15,17 @@ import boto3
 import click
 
 
-from bucket import BucketManager
-from domain import DomainManager
+from webotron.bucket import BucketManager
+from webotron.domain import DomainManager
+from webotron.certificate import CertificateManager
+from webotron.cdn import DistributionManager
 
 session = boto3.Session(profile_name='pythonAutomation')
-bucket_manager = BucketManager(session)_9880372aa2354929e138ee53cf662b58.tljzshvwok.acm-validations.aws.
+bucket_manager = BucketManager(session)
 domain_manager = DomainManager(session)
+cert_manager = CertificateManager(session)
+dist_manager = DistributionManager(session)
+
 #s3 = session.resource('s3')
 
 
@@ -28,6 +33,12 @@ domain_manager = DomainManager(session)
 def cli():
     """Webotron deploys websites to AWS."""
     pass
+
+@cli.command('find-cert')
+@click.argument('domain')
+def find_cert(domain):
+    print(cert_manager.find_matching_cert(domain))
+
 
 
 @cli.command('list-buckets')
@@ -76,6 +87,31 @@ def setup_domain(domain, bucket):
 
   print("Domain configure: http://{}".format(domain))
   print(a_record)
+
+@cli.command('setup-cdn')
+@cli.argument('domain')
+@cli.argument('bucket')
+def setup_cdn(domain, bucket):
+    dist = dist_manager.find_matching_dist(domain)
+    if not dist:
+        cert = cert_manager.find_matching_cert(domain)
+        if not cert: # No matching SSL
+            print('Error: No matching cert found.')
+            return
+
+        dist = dist_manager.create_dist(domain, cert)
+        print("Waiting for distribution deployment...")
+        dist_manager.await_deploy(dist)
+
+
+    zone = domain_manager.find_hosted_zone(domain) \
+         or domain_manager.create_hosted_zone(domain)
+
+    domain_manager.create_cf_domain_record(zone, domain)
+    print("Domain Configured https://{}".format(domain))
+
+    return
+
 
 
 if __name__ == '__main__':
